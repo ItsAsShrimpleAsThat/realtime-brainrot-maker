@@ -3,6 +3,7 @@ from RealtimeSTT import AudioToTextRecorder
 import os
 import sys
 import frameextraction
+import cv2
 
 """
 openaiKeyFile = open("openai.key", "r") # open API key file.
@@ -37,7 +38,7 @@ if __name__ == "__main__": # put everything in here to prevent any shit from hap
 
   textSoFar = ""
   
-  frameextraction.extract(videofile, outputFolder, framelimit) #extract
+  frameextraction.extract(videofile, outputFolder, framelimit) # extract
   
   print("Initializing mic")
   recorder = AudioToTextRecorder(model="tiny.en", realtime_model_type='tiny.en', 
