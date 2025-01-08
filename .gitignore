@@ -1,3 +1,6 @@
 openai.key
 *.key
 *.log
+frames/
+__pycache__/
+videos/

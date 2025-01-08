@@ -1,10 +1,11 @@
 if __name__ == "__main__":
   print("Dawg this isn't main.py wtf are you doing")
+  exit(0)
 
 import cv2
 import os
 
-def extract(videofile, folder):
+def extract(videofile, folder, framelimit = -1):
   #make sure string isnt empty so things dont go to shit
   if(folder == ""):
     print("please input valid path please please")
@@ -19,7 +20,10 @@ def extract(videofile, folder):
   success,image = vidcap.read()
   count = 0
   while success:
-    cv2.imwrite("frame%d.jpg" % count, image)     # save frame as JPEG file      
+    cv2.imwrite(folder + "/frame%d.jpg" % count, image)     # save frame as JPEG file      
     success,image = vidcap.read()
     print('Read a new frame: ', success)
     count += 1
+
+    if(count >= framelimit):
+      break
