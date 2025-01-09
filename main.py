@@ -5,6 +5,7 @@ import sys
 import frameextraction
 import cv2
 import time
+from threading import Thread
 
 """
 openaiKeyFile = open("openai.key", "r") # open API key file.
@@ -37,6 +38,19 @@ def realtimeTranscribe(text):
   textSoFar += text
   print(text)
 
+def micListenLoop():
+  while True:
+    recorder.text(process_text)
+
+def frameLoop():
+  global framerate
+  global lastFrameDrawn
+  
+  while True:
+    if(time.time() - lastFrameDrawn > 1 / framerate):
+      lastFrameDrawn = time.time()
+      print("New frame")
+
 if __name__ == "__main__": # put everything in here to prevent any shit from happening because the STT library uses multiprocessing
   # Extract all frames from video
   args = sys.argv[1:] # get args
@@ -58,9 +72,10 @@ if __name__ == "__main__": # put everything in here to prevent any shit from hap
                                  enable_realtime_transcription=True, realtime_processing_pause=0.02,
                                  #on_realtime_transcription_update=realtimeTranscribe)
                                  on_realtime_transcription_stabilized=realtimeTranscribe)
-
-  while True:
-    #recorder.text(process_text)
-    if(time.time() - lastFrameDrawn > 1 / framerate):
-      lastFrameDrawn = time.time()
-      print("New frame")
+  
+  micThread = Thread(target=micListenLoop)
+  frameThread = Thread(target=frameLoop)
+  #recorder.text(process_text)
+  micThread.start()
+  frameThread.start()
+  
