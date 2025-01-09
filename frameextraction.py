@@ -6,6 +6,19 @@ import cv2
 import sys
 import os
 
+videoCapture = None
+count = 0
+
+def setVideo(videofile):
+  global videoCapture
+  videoCapture = cv2.VideoCapture(videofile) 
+
+def getNextFrame():
+  global videoCapture
+  global count
+  success,image = videoCapture.read()
+  count += 1
+
 def extract(videofile, folder, framelimit = -1, vidWidth = 640, vidHeight = 360):
   #make sure string isnt empty so things dont go to shit
   if(folder == ""):

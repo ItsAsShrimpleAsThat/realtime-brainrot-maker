@@ -51,7 +51,7 @@ if __name__ == "__main__": # put everything in here to prevent any shit from hap
 
   textSoFar = ""
   
-  frameextraction.extract(videofile, outputFolder, framelimit) # extract
+  #frameextraction.extract(videofile, outputFolder, framelimit) # extract
   
   print("Initializing mic")
   recorder = AudioToTextRecorder(model="tiny.en", realtime_model_type='tiny.en', 
@@ -60,4 +60,7 @@ if __name__ == "__main__": # put everything in here to prevent any shit from hap
                                  on_realtime_transcription_stabilized=realtimeTranscribe)
 
   while True:
-    recorder.text(process_text)
+    #recorder.text(process_text)
+    if(time.time() - lastFrameDrawn > 1 / framerate):
+      lastFrameDrawn = time.time()
+      print("New frame")
