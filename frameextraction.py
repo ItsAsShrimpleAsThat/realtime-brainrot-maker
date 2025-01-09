@@ -18,6 +18,10 @@ def getNextFrame():
   global count
   success,image = videoCapture.read()
   count += 1
+  if(success):
+    return image
+  else:
+    return None
 
 def extract(videofile, folder, framelimit = -1, vidWidth = 640, vidHeight = 360):
   #make sure string isnt empty so things dont go to shit

@@ -45,11 +45,12 @@ def micListenLoop():
 def frameLoop():
   global framerate
   global lastFrameDrawn
-  
+
   while True:
-    if(time.time() - lastFrameDrawn > 1 / framerate):
-      lastFrameDrawn = time.time()
-      print("New frame")
+    cv2.imshow("Brainrot", frameextraction.getNextFrame())
+    if cv2.waitKey(1) & 0xFF == ord("`"):
+        break
+    time.sleep(1/framerate)
 
 if __name__ == "__main__": # put everything in here to prevent any shit from happening because the STT library uses multiprocessing
   # Extract all frames from video
@@ -65,6 +66,7 @@ if __name__ == "__main__": # put everything in here to prevent any shit from hap
 
   textSoFar = ""
   
+  frameextraction.setVideo(videofile)
   #frameextraction.extract(videofile, outputFolder, framelimit) # extract
   
   print("Initializing mic")
