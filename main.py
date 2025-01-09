@@ -4,6 +4,7 @@ import os
 import sys
 import frameextraction
 import cv2
+import time
 
 """
 openaiKeyFile = open("openai.key", "r") # open API key file.
@@ -14,6 +15,18 @@ AIclient = OpenAI(
   api_key = openaiAPIKey
 )
 """
+
+# Text drawing shit
+font = cv2.FONT_HERSHEY_SIMPLEX
+textScale = 1
+textThickness = 2
+borderThickness = 2
+
+# Frame drawing shit
+framerate = 30
+lastFrameDrawn = time.time()
+
+textSoFar = ""
 
 def process_text(text):
   print(text)

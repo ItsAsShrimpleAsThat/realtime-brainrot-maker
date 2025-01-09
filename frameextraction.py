@@ -3,6 +3,7 @@ if __name__ == "__main__":
   exit(0)
 
 import cv2
+import sys
 import os
 
 def extract(videofile, folder, framelimit = -1, vidWidth = 640, vidHeight = 360):
@@ -19,6 +20,7 @@ def extract(videofile, folder, framelimit = -1, vidWidth = 640, vidHeight = 360)
   vidcap = cv2.VideoCapture(videofile)
   success,image = vidcap.read()
   count = 0
+  totalsize = sys.getsizeof(image)
 
   # image is orignally 640x360
   # To get the width of the image if we crop it to 9:16 vertical
@@ -30,8 +32,11 @@ def extract(videofile, folder, framelimit = -1, vidWidth = 640, vidHeight = 360)
     cv2.imwrite(folder + "/frame%d.jpg" % count, image)     # save frame as JPEG file      
     success,image = vidcap.read()
     image = image[0:vidHeight, (middle - (newWidth >> 1)):(middle + (newWidth >> 1)) ]
-    print('Read a new frame: ' + str(success) + " " + str(count))
+    print('Read a new frame: ' + str(success) + " " + str(count) + " size in memory (bytes): " + str(sys.getsizeof(image)))
     count += 1
+    totalsize += sys.getsizeof(image)
 
     if(count >= framelimit):
       break
+  
+  print(f"Total size in memory if you load the entire thing at once: {totalsize} bytes ({totalsize / 1024} MB)")
