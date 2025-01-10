@@ -21,22 +21,28 @@ AIclient = OpenAI(
 font = cv2.FONT_HERSHEY_SIMPLEX
 textScale = 1
 textThickness = 2
-borderThickness = 2
+borderThickness = 5
+textColor = (255, 255, 255) # BGR
+borderColor = (0, 0, 0)
 
 # Frame drawing shit
 framerate = 30
 lastFrameDrawn = time.time()
+videoWidth = 404
 
-textSoFar = ""
+transcribedThisCycle = ""
+displayedText = ""
 
 def process_text(text):
   print(text)
 
 def realtimeTranscribe(text):
-  global textSoFar
+  global transcribedThisCycle
+  text = text.replace(".", "").replace(",", "")
   os.system("cls")
-  textSoFar += text
-  print(text)
+  #print(text)
+  #print(text[max(len(transcribedThisCycle) + 1, 0):])
+  transcribedThisCycle = text
 
 def micListenLoop():
   while True:
@@ -45,11 +51,23 @@ def micListenLoop():
 def frameLoop():
   global framerate
   global lastFrameDrawn
+  global transcribedThisCycle
+  global font
 
   while True:
-    cv2.imshow("Brainrot", frameextraction.getNextFrame())
+    frame = frameextraction.getNextFrame()
+    
+    textSize = cv2.getTextSize(transcribedThisCycle, font, 1, 2)[0]
+    textX = (frame.shape[1] - textSize[0]) // 2
+    textY = (frame.shape[0] + textSize[1]) // 2
+
+    cv2.putText(frame, transcribedThisCycle, (textX, textY), font, textScale, borderColor, textThickness + borderThickness)
+    cv2.putText(frame, transcribedThisCycle, (textX, textY), font, textScale, textColor, textThickness)
+    
+    cv2.imshow("Brainrot", frame)
     if cv2.waitKey(1) & 0xFF == ord("`"):
         break
+        exit(0)
     time.sleep(1/framerate)
 
 if __name__ == "__main__": # put everything in here to prevent any shit from happening because the STT library uses multiprocessing
