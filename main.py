@@ -30,19 +30,24 @@ framerate = 30
 lastFrameDrawn = time.time()
 videoWidth = 404
 
-transcribedThisCycle = ""
+transcribedThisCycle = []
 displayedText = ""
 
 def process_text(text):
-  print(text)
+  transcribedThisCycle = ""
 
 def realtimeTranscribe(text):
   global transcribedThisCycle
-  text = text.replace(".", "").replace(",", "")
+  global displayedText
+
   os.system("cls")
-  #print(text)
-  #print(text[max(len(transcribedThisCycle) + 1, 0):])
-  transcribedThisCycle = text
+
+  if len(transcribedThisCycle) > 1:
+    displayedText = " ".join(text.split(" ")[-len(transcribedThisCycle) + 1:])
+  else:
+    displayedText = text
+
+  transcribedThisCycle = text.split(" ")
 
 def micListenLoop():
   while True:
@@ -53,16 +58,17 @@ def frameLoop():
   global lastFrameDrawn
   global transcribedThisCycle
   global font
+  global displayedText
 
   while True:
     frame = frameextraction.getNextFrame()
     
-    textSize = cv2.getTextSize(transcribedThisCycle, font, 1, 2)[0]
+    textSize = cv2.getTextSize(displayedText, font, 1, 2)[0]
     textX = (frame.shape[1] - textSize[0]) // 2
     textY = (frame.shape[0] + textSize[1]) // 2
 
-    cv2.putText(frame, transcribedThisCycle, (textX, textY), font, textScale, borderColor, textThickness + borderThickness)
-    cv2.putText(frame, transcribedThisCycle, (textX, textY), font, textScale, textColor, textThickness)
+    cv2.putText(frame, displayedText, (textX, textY), font, textScale, borderColor, textThickness + borderThickness)
+    cv2.putText(frame, displayedText, (textX, textY), font, textScale, textColor, textThickness)
     
     cv2.imshow("Brainrot", frame)
     if cv2.waitKey(1) & 0xFF == ord("`"):
@@ -90,8 +96,8 @@ if __name__ == "__main__": # put everything in here to prevent any shit from hap
   print("Initializing mic")
   recorder = AudioToTextRecorder(model="tiny.en", realtime_model_type='tiny.en', 
                                  enable_realtime_transcription=True, realtime_processing_pause=0.02,
-                                 #on_realtime_transcription_update=realtimeTranscribe)
-                                 on_realtime_transcription_stabilized=realtimeTranscribe)
+                                 on_realtime_transcription_update=realtimeTranscribe)
+                                 #on_realtime_transcription_stabilized=realtimeTranscribe)
   
   micThread = Thread(target=micListenLoop)
   frameThread = Thread(target=frameLoop)
