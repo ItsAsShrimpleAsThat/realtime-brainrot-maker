@@ -34,7 +34,7 @@ transcribedThisCycle = []
 displayedText = ""
 
 def process_text(text):
-  transcribedThisCycle = ""
+  pass
 
 def realtimeTranscribe(text):
   global transcribedThisCycle
@@ -42,8 +42,11 @@ def realtimeTranscribe(text):
 
   os.system("cls")
 
-  if len(transcribedThisCycle) > 1:
-    displayedText = " ".join(text.split(" ")[-len(transcribedThisCycle) + 1:])
+  splittext = text.split(" ")
+
+  if len(transcribedThisCycle) > 1 and len(splittext) > len(transcribedThisCycle):
+    displayedText = " ".join(splittext[len(transcribedThisCycle) + 1:])
+    print(len(transcribedThisCycle), len(splittext))
   else:
     displayedText = text
 
